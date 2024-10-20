@@ -1,0 +1,129 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{geometry, CJKutf8}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+% useful packages.
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{layout}
+\usepackage{listings}
+\usepackage{float, caption}
+
+\lstset{
+    basicstyle=\ttfamily, basewidth=0.5em
+}
+
+% some common command
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\avg}[1]{\left\langle #1 \right\rangle}
+\newcommand{\difFrac}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pdfFrac}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\OFL}{\mathrm{OFL}}
+\newcommand{\UFL}{\mathrm{UFL}}
+\newcommand{\fl}{\mathrm{fl}}
+\newcommand{\op}{\odot}
+\newcommand{\Eabs}{E_{\mathrm{abs}}}
+\newcommand{\Erel}{E_{\mathrm{rel}}}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhead{}
+\lhead{万成, 3220104028}
+\chead{数据结构与算法第四次作业}
+\rhead{Oct.20th, 2024}
+
+\section{测试程序的设计思路}
+
+为了全面测试 \texttt{List} 类的各项功能，我设计了多个测试用例，覆盖了列表的基本操作以及拷贝和移动语义。具体设计思路如下：
+
+\begin{enumerate}
+    \item \textbf{初始化测试：} 首先创建一个空的整数列表，验证其是否为空以及大小是否为零。
+    \item \textbf{插入操作测试：} 
+    \begin{itemize}
+        \item 使用 \texttt{push\_back} 在列表尾部插入元素，测试尾部插入功能。
+        \item 使用 \texttt{push\_front} 在列表头部插入元素，测试头部插入功能。
+    \end{itemize}
+    \item \textbf{访问操作测试：} 通过 \texttt{front} 和 \texttt{back} 方法访问首尾元素，确保访问功能正确。
+    \item \textbf{删除操作测试：} 
+    \begin{itemize}
+        \item 使用 \texttt{pop\_front} 删除头部元素，测试头部删除功能。
+        \item 使用 \texttt{pop\_back} 删除尾部元素，测试尾部删除功能。
+    \end{itemize}
+    \item \textbf{插入与删除特定位置测试：} 
+    \begin{itemize}
+        \item 使用 \texttt{insert} 方法在指定位置插入元素。
+        \item 使用 \texttt{erase} 方法删除指定位置的元素。
+    \end{itemize}
+    \item \textbf{清空测试：} 使用 \texttt{clear} 方法清空列表，验证列表是否为空。
+    \item \textbf{初始化列表构造函数测试：} 创建一个包含字符串的列表，测试初始化列表构造函数。
+    \item \textbf{拷贝构造函数与赋值运算符测试：} 
+    \begin{itemize}
+        \item 使用拷贝构造函数创建列表的副本。
+        \item 使用赋值运算符将一个列表赋值给另一个列表。
+    \end{itemize}
+    \item \textbf{移动构造函数与移动赋值运算符测试：} 
+    \begin{itemize}
+        \item 使用移动构造函数将一个列表的数据移动到另一个列表。
+        \item 使用移动赋值运算符将一个列表的数据移动到另一个列表。
+    \end{itemize}
+    \item \textbf{内存泄漏检测：} 使用 \texttt{valgrind} 工具检测程序在运行过程中是否存在内存泄漏。
+\end{enumerate}
+
+通过上述测试用例，确保 \texttt{List} 类的各项功能在不同场景下均能正确运行。
+
+\section{测试的结果}
+
+所有设计的测试用例均成功通过，具体结果如下：
+
+\begin{enumerate}
+    \item \textbf{初始化测试：} 成功创建一个空的整数列表，\texttt{empty()} 返回 \texttt{true}，\texttt{size()} 返回 0。
+    \item \textbf{插入操作测试：} 
+    \begin{itemize}
+        \item 使用 \texttt{push\_back} 插入 10, 20, 30 后，列表顺序为 10, 20, 30。
+        \item 使用 \texttt{push\_front} 插入 5, 2 后，列表顺序为 2, 5, 10, 20, 30。
+    \end{itemize}
+    \item \textbf{访问操作测试：} 
+    \begin{itemize}
+        \item \texttt{front()} 返回 2。
+        \item \texttt{back()} 返回 30。
+    \end{itemize}
+    \item \textbf{删除操作测试：} 
+    \begin{itemize}
+        \item 使用 \texttt{pop\_front} 删除首元素后，列表为 5, 10, 20, 30。
+        \item 使用 \texttt{pop\_back} 删除尾元素后，列表为 5, 10, 20。
+    \end{itemize}
+    \item \textbf{插入与删除特定位置测试：} 
+    \begin{itemize}
+        \item 在第二个位置插入 15 后，列表为 5, 15, 10, 20。
+        \item 删除第二个位置的元素 (15) 后，列表回到 5, 10, 20。
+    \end{itemize}
+    \item \textbf{清空测试：} 使用 \texttt{clear} 方法后，列表为空，\texttt{empty()} 返回 \texttt{true}，\texttt{size()} 返回 0。
+    \item \textbf{初始化列表构造函数测试：} 使用 \texttt{"苹果", "香蕉", "樱桃"} 初始化字符串列表，列表顺序为 苹果, 香蕉, 樱桃。
+    \item \textbf{拷贝构造函数与赋值运算符测试：} 
+    \begin{itemize}
+        \item 拷贝构造函数创建的副本列表包含 苹果, 香蕉, 樱桃。
+        \item 赋值运算符赋值后的列表同样包含 苹果, 香蕉, 樱桃。
+    \end{itemize}
+    \item \textbf{移动构造函数与移动赋值运算符测试：} 
+    \begin{itemize}
+        \item 移动构造函数移动后的列表包含 苹果, 香蕉, 樱桃，原始列表大小为 0。
+        \item 移动赋值运算符移动后的目标列表包含 苹果, 香蕉, 樱桃，源列表在移动后大小为 0。
+    \end{itemize}
+    \item \textbf{内存泄漏检测：} 使用 \texttt{valgrind} 工具检测程序运行过程中没有发现内存泄漏，所有动态分配的内存均被正确释放。
+\end{enumerate}
+
+\section{结论}
+
+感觉没bug，感觉没内存泄露。如果有那确实就是有了，没有的话那就是没有。
+
+\end{document}
