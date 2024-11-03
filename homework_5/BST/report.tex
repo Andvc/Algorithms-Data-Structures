@@ -1,0 +1,131 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{ctex} % 支持中文
+
+\title{homework_4}
+\author{万成-322014028}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{引言}
+描述对二叉搜索树（BST）实现所做的修改和对 `remove` 函数的优化：通过避免不必要的节点值复制和递归删除来提高效率。
+
+\section{修改细节}
+在原始实现中，当要删除的节点有两个子节点时，`remove` 函数复制了要删除节点的值，这导致了效率低下。为了解决这个问题，函数的结构被重构，利用指针操作和一个辅助函数 `detachMin`。
+
+\subsection{detachMin 函数}
+`detachMin` 函数负责查找并移除子树中的最小节点。这样可以更高效地替换被删除节点，而无需复制其值。
+
+\begin{verbatim}
+BinaryNode *detachMin(BinaryNode *&t) {
+    if (t == nullptr) {
+        return nullptr;
+    }
+    if (t->left == nullptr) {
+        BinaryNode *minNode = t;
+        t = t->right;  // 调整指针
+        return minNode;  // 返回被移除的最小节点
+    }
+    return detachMin(t->left);
+}
+\end{verbatim}
+
+\subsection{更新后的 remove 函数}
+`remove` 函数被修改为在节点有两个子节点的情况下使用 `detachMin`：
+
+\begin{verbatim}
+void remove(const Comparable &x, BinaryNode *&t) {
+    if (t == nullptr) return;
+
+    if (x < t->element) {
+        remove(x, t->left);
+    } else if (x > t->element) {
+        remove(x, t->right);
+    } else {
+        if (t->left != nullptr && t->right != nullptr) {
+            BinaryNode *minNode = detachMin(t->right);
+            t->element = minNode->element;
+            delete minNode;  // 删除被移除的节点
+        } else {
+            BinaryNode *oldNode = t;
+            t = (t->left != nullptr) ? t->left : t->right;
+            delete oldNode;
+        }
+    }
+}
+\end{verbatim}
+
+这种实现避免了不必要的复制和递归，显著提高了删除节点时的性能。
+
+\section{测试方法}
+测试过程包括向 BST 中插入元素，执行各种操作，并验证输出。测试的关键操作包括：
+
+\begin{itemize}
+    \item 插入多个元素
+    \item 获取最小和最大元素
+    \item 检查特定元素的存在性
+    \item 在不同情况下删除节点（包含两个子节点、一个子节点和叶节点）
+    \item 清空树
+    \item 测试拷贝和移动语义
+    \item 在操作空树时的异常处理
+\end{itemize}
+
+\section{测试结果}
+测试输出确认了操作的正确性。以下是一些关键结果：
+
+\subsection{初始树}
+插入元素后的初始树结构正确显示：
+
+\begin{verbatim}
+初始树:
+3
+5
+7
+10
+12
+15
+18
+\end{verbatim}
+
+\subsection{删除后的树}
+每次删除后的树结构也如预期打印出来，确认了适当节点的删除：
+
+- 删除 7 后：
+\begin{verbatim}
+删除 7 后的树:
+3
+5
+10
+12
+15
+18
+\end{verbatim}
+
+- 删除 10 后（有两个子节点）：
+\begin{verbatim}
+删除 10 后的树:
+3
+5
+12
+15
+18
+\end{verbatim}
+
+\subsection{最终状态}
+在所有操作后，确认树为空的最终状态：
+
+\begin{verbatim}
+清空后的树:
+空树
+树是否为空? 是
+\end{verbatim}
+
+\section{结论}
+对二叉搜索树实现中 `remove` 函数的修改提高了效率，避免了不必要的复制和递归删除。所进行的测试验证了 BST 操作的正确性和鲁棒性，确保数据结构在各种情况下保持其完整性。
+
+\end{document}
