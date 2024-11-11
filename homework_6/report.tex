@@ -1,0 +1,63 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath}
+\usepackage{ctex}  % 用于支持中文
+
+\title{ \texttt{remove} 函数的实现}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+
+\texttt{remove} 函数的定义：
+
+\begin{verbatim}
+void remove(const Comparable &x) {
+    remove(x, root);
+}
+\end{verbatim}
+
+函数调用了一个递归辅助函数 \texttt{remove} 来操作树的根节点。
+
+\section{函数 \texttt{remove} 实现}
+
+实际的删除操作是由辅助函数 \texttt{remove} 完成的：
+
+\begin{verbatim}
+void remove(const Comparable &x, BinaryNode *& t) {
+    if (t == nullptr) return;
+
+    if (x < t->element) {
+        remove(x, t->left);
+    } else if (x > t->element) {
+        remove(x, t->right);
+    } else if (t->left != nullptr && t->right != nullptr) {
+        BinaryNode *minNode = detachMin(t->right);
+        t->element = minNode->element;
+        delete minNode;
+    } else {
+        BinaryNode *oldNode = t;
+        t = (t->left != nullptr) ? t->left : t->right;
+        delete oldNode;
+    }
+    balance(t);
+}
+\end{verbatim}
+
+工作流程：
+\begin{enumerate}
+    \item \textbf{基本情况：} 如果当前节点 \texttt{t} 为 \texttt{nullptr}，表示树为空，函数直接返回。
+    \item \textbf{查找节点：} 如果值 \texttt{x} 小于当前节点的元素，则递归地在左子树中查找并删除节点；如果 \texttt{x} 大于当前节点的元素，则递归地在右子树中查找并删除节点。
+    \item \textbf{具有两个子节点的节点：} 如果待删除的节点有两个子节点，我们通过 \texttt{detachMin} 获取右子树中的最小节点，将当前节点的值替换为最小节点的值，然后删除最小节点。
+    \item \textbf{具有一个或没有子节点的节点：} 如果节点只有一个子节点或没有子节点，直接用其子节点（如果有的话）替换当前节点，并删除当前节点。
+\end{enumerate}
+
+\section{平衡树}
+
+在删除节点之后，树可能会失去平衡。为了确保树的平衡性，调用 \texttt{balance} 函数，该函数根据树的高度调整节点的位置，通过旋转节点来恢复 AVL 树的平衡性。
+
+
+\end{document}
