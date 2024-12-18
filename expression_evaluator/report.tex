@@ -1,0 +1,69 @@
+\documentclass[12pt]{article}
+\usepackage{ctex} % 支持中文
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\geometry{a4paper, margin=1in}
+
+\title{四则运算homework}
+\author{万成-3220104028}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{一句话简介}
+
+一个四则运算表达式求值程序，能识别加减乘除，重括号，小数，负数，科学计数法（加分项）
+
+
+\section{设计与实现}
+
+
+\subsection{主程序（main.cpp）}
+
+主程序负责处理用户输入、输出结果以及运行预定义的测试用例。它调用表达式求值类的接口，获取计算结果或判断表达式是否合法。
+
+\subsection{表达式求值类（expression\_evaluator.h）}
+
+该类包含了表达式解析和计算的核心逻辑，主要包括以下步骤：
+
+\begin{enumerate}
+    \item \textbf{分词（Tokenization）}：将输入的字符串表达式分解为数字、运算符和括号等标记。
+    \item \textbf{中缀转后缀（Shunting Yard Algorithm）}：利用栈将中缀表达式转换为后缀表达式，以便于计算。
+    \item \textbf{后缀表达式计算}：根据后缀表达式计算最终结果。
+\end{enumerate}
+
+此外，程序还包含了错误检测机制，用于识别非法表达式，并在检测到错误时返回“ILLEGAL”。
+
+\section{测试与验证}
+
+为了确保程序的正确性和鲁棒性，设计了多组测试用例，包括：
+
+\subsection{合法表达式}
+
+\begin{itemize}
+    \item 简单运算：$1+2 = 3$
+    \item 括号运算：$(1+2)*3 = 9$
+    \item 负数和科学计数法：$-1 + 2e2 = 199$
+\end{itemize}
+
+\subsection{非法表达式}
+
+\begin{itemize}
+    \item 括号不匹配：$(1+2$ 或 $1+2)$
+    \item 连续运算符：$1++2.1$ 或 $1 +* 2$
+    \item 除数为零：$1/0$
+    \item 科学计数法错误：$1 + 2e$ 或 $1 + 2e+$
+    \item 空表达式或仅有空格
+\end{itemize}
+
+测试完证明了可靠性。
+
+\section{总结}
+
+
+
+\end{document}
